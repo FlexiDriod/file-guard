@@ -1,0 +1,56 @@
+############################################
+File Guard Started......
+Monitoring: /home/sudip-howlader/Downloads
+Log File: /home/sudip-howlader/file-guard/logs/log_2026-04-06_07-51-31.log
+###########################################
+
+Setting up watches.
+Watches established.
+
+--------------------------------------------------
+Mon Apr  6 07:53:29 IST 2026 - New file detected
+File: test_script.txt
+Path: /home/sudip-howlader/Downloads/test_script.txt
+--------------------------------------------------
+Scan Result: UNSAFE
+Action: QUARANTINE -> /home/sudip-howlader/file-guard/quarantine
+
+
+--------------------------------------------------
+Mon Apr  6 07:54:44 IST 2026 - New file detected
+File: rev.txt
+Path: /home/sudip-howlader/Downloads/rev.txt
+--------------------------------------------------
+Scan Result: SAFE
+Action: SAFE
+
+
+--------------------------------------------------
+Mon Apr  6 07:56:42 IST 2026 - New file detected
+File: danger.txt
+Path: /home/sudip-howlader/Downloads/danger.txt
+--------------------------------------------------
+Scan Result: SAFE
+Action: SAFE
+
+
+--------------------------------------------------
+Mon Apr  6 07:57:39 IST 2026 - New file detected
+File: test.pdf
+Path: /home/sudip-howlader/Downloads/test.pdf
+--------------------------------------------------
+Scan Result: UNSAFE
+Action: DELETE
+
+Terminated
+
+Mon Apr  6 08:01:34 IST 2026 - Service Stopping...
+File Guard Stopped........
+############################################
+File Guard Started......
+Monitoring: /home/sudip-howlader/Downloads
+Log File: /home/sudip-howlader/file-guard/logs/log_2026-04-06_08-09-53.log
+###########################################
+
+Setting up watches.
+Watches established.

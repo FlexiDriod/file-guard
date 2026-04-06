@@ -1,0 +1,22 @@
+[Unit]
+Description=File Guard Monitor
+After=graphical-session.target
+
+[Service]
+ExecStart=/home/sudip-howlader/file-guard/monitor.sh
+Restart=always
+RestartSec=5
+
+# Set working Directory
+WorkingDirectory=/home/sudip-howlader/file-guard
+
+# Env for GUI + Sound
+Environment=DISPLAY=:0
+Environment=XDG_RUNTIME_DIR=/run/user/1000
+
+# Logging
+StandardOutput=append:/home/sudip-howlader/file-guard/logs/service.log
+StandardError=append:/home/sudip-howlader/file-guard/logs/service.log
+
+[Install]
+WantedBy=default.target
