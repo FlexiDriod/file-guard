@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-set -o pipefail
+# set -o pipefail
 # set -o nounset   # It prevents using undefined variables.
 export PATH="/usr/bin:/bin:/usr/sbin:/sbin"
 
@@ -16,13 +16,6 @@ WATCH_DIR="/home/sudip-howlader/Downloads"
 SCANNER_SCRIPT="/home/sudip-howlader/file-guard/scanner.py"
 LOG_DIR="/home/sudip-howlader/file-guard/logs"
 QUARANTINE_DIR="/home/sudip-howlader/file-guard/quarantine"
-
-LOCK_FILE="/tmp/fileguard.lock"
-exec 200>"$LOCK_FILE"
-flock -n 200 || {
-    echo "Another instance is running. Exiting."
-    exit 1
-}
 
 # 🔥 FIX 5: Safe scanner execution
 safe_run() {
