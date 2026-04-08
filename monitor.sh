@@ -97,7 +97,7 @@ fi
 
 # Monitor Function
 monitor_download() {
-    inotifywait -m -e close_write,create,moved_to --format '%w %f' "$WATCH_DIR" 2>/dev/null | \
+    inotifywait -m -e close_write,create --format '%w %f' "$WATCH_DIR" 2>/dev/null | \
     while read -r path file; do
 
         # 🔥 FIX: Safe full path resolution

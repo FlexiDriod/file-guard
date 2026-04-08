@@ -303,3 +303,37 @@ Terminated
 
 Wed Apr  8 12:07:53 IST 2026 - Service Stopping...
 File Guard Stopped........
+############################################
+File Guard Started......
+Monitoring: /home/sudip-howlader/Downloads
+Log File: /home/sudip-howlader/file-guard/logs/log_2026-04-08_12-08-31.log
+###########################################
+
+
+--------------------------------------------------
+Wed Apr  8 12:09:16 IST 2026 - New file detected
+File: 38728084.webp
+Path: /home/sudip-howlader/Downloads/38728084.webp
+Type: image/webp
+Size: 13592 bytes
+SHA256: caa00f90f02447831e9fdc9da8708be8d5cca5a8a2aad2556861d583d312b187
+--------------------------------------------------
+Scan Result: SAFE
+Action: SAFE
+
+
+--------------------------------------------------
+Wed Apr  8 12:10:57 IST 2026 - New file detected
+File: OIP-680768657.jpg
+Path: /home/sudip-howlader/Downloads/OIP-680768657.jpg
+Type: image/jpeg
+Size: 39635 bytes
+SHA256: 08248a99d3aa4a4e042e011c0fac09b0aca49d601124bbad1665265b5c02f971
+--------------------------------------------------
+Scan Result: SAFE
+Action: SAFE
+
+Terminated
+
+Wed Apr  8 12:22:15 IST 2026 - Service Stopping...
+File Guard Stopped........
