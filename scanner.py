@@ -63,8 +63,8 @@ def safe_extract(zip_ref, path):
 def clamav_scan(target):
     try:
         result = subprocess.run(
-            # ["clamscan", "-r", "--infected", target], capture_output=True, text=True
-            ["clamscan", "--no-summary", target],
+            ["clamscan", "-r", "--infected", target],
+            # ["clamscan", "--no-summary", target],
             capture_output=True,
             text=True
         )
