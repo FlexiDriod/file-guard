@@ -49,7 +49,7 @@ chmod 600 "$PROCESSED"
 # ==============================
 # 🔐 Scanner Integrity Check (NEW)
 # ==============================
-SCANNER_HASH_EXPECTED="b5dc249c430bceeb5db0f5587d855df77fab7b18790b3183cd631d47ac64e9e4"
+SCANNER_HASH_EXPECTED="9f191892dd6bc8dd2b426cdcb2456e9b2b5ab4559be62de8123233be0cb832eb"
 
 if [ ! -f "$SCANNER_SCRIPT" ]; then
     echo "Scanner script not found!" | tee -a "$LOG_FILE"
