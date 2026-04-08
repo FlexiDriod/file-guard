@@ -20,15 +20,13 @@ QUARANTINE_DIR="/home/sudip-howlader/file-guard/quarantine"
 LOCK_FILE="/tmp/fileguard.lock"
 exec 200>"$LOCK_FILE"
 flock -n 200 || {
-    echo "Another instance is running. Exiting." | tee -a "$LOG_FILE"
+    echo "Another instance is running. Exiting."
     exit 1
 }
 
 # 🔥 FIX 5: Safe scanner execution
 safe_run() {
-    set +e
-    "$@"
-    set -e
+    "$@" || return 0
 }
 
 # Ensure log directory exists
@@ -98,6 +96,11 @@ echo "Monitoring: $WATCH_DIR" | tee -a "$LOG_FILE"
 echo "Log File: $LOG_FILE" | tee -a "$LOG_FILE"
 echo "###########################################" | tee -a "$LOG_FILE"
 echo "" | tee -a "$LOG_FILE"
+
+if [ ! -x "$(command -v python3)" ]; then
+    echo "Python3 not found!" | tee -a "$LOG_FILE"
+    exit 1
+fi
 
 # Monitor Function
 monitor_download() {
@@ -170,11 +173,6 @@ monitor_download() {
 
         # Desktop Notification: new file
         notify-send "File Guard" "New file: $SAFE_FILE"
-
-        if [ ! -x "$(command -v python3)" ]; then
-            echo "Python3 not found!" | tee -a "$LOG_FILE"
-            exit 1
-        fi
 
         RESULT=$(safe_run timeout 10s python3 "$SCANNER_SCRIPT" "$FULL_PATH" 2>/dev/null)
         case "$RESULT" in
