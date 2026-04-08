@@ -75,3 +75,51 @@ Path: /home/sudip-howlader/Downloads/5960475-972843537.jpg
 Scan Result: SAFE
 Action: SAFE
 
+
+--------------------------------------------------
+Mon Apr  6 18:28:37 IST 2026 - New file detected
+File: fileguard_test
+Path: /home/sudip-howlader/Downloads/fileguard_test
+--------------------------------------------------
+Scan Result: ERROR
+Action: IGNORE
+
+
+--------------------------------------------------
+Mon Apr  6 18:36:16 IST 2026 - New file detected
+File: Wrl9Ngxv.txt
+Path: /home/sudip-howlader/Downloads/Wrl9Ngxv.txt
+--------------------------------------------------
+Scan Result: ERROR
+Action: DELETE
+
+
+--------------------------------------------------
+Mon Apr  6 18:36:32 IST 2026 - New file detected
+File: Wrl9Ngxv.txt.part
+Path: /home/sudip-howlader/Downloads/Wrl9Ngxv.txt.part
+--------------------------------------------------
+Scan Result: SAFE
+Action: SAFE
+
+
+--------------------------------------------------
+Mon Apr  6 18:36:45 IST 2026 - New file detected
+File: attribute_local_apache2_icons.jpg
+Path: /home/sudip-howlader/Downloads/attribute_local_apache2_icons.jpg
+--------------------------------------------------
+Scan Result: SAFE
+Action: SAFE
+
+Terminated
+
+Mon Apr  6 18:38:37 IST 2026 - Service Stopping...
+File Guard Stopped........
+############################################
+File Guard Started......
+Monitoring: /home/sudip-howlader/Downloads
+Log File: /home/sudip-howlader/file-guard/logs/log_2026-04-08_05-39-32.log
+###########################################
+
+Setting up watches.
+Watches established.
