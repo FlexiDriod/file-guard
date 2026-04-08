@@ -7,17 +7,20 @@ import hashlib
 import zipfile
 import magic
 import yara
+import tempfile
+import shutil
 
 # ==============================
 # CONFIG
 # ==============================
-YARA_RULES_FILE = "rules.yar"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+YARA_RULES_PATH = os.path.join(BASE_DIR, "rules.yar")
 
 # ==============================
-# LOAD YARA RULES (ONCE)
+# LOAD YARA RULES
 # ==============================
 try:
-    YARA_RULES = yara.compile(filepath="/home/sudip-howlader/file-guard/rules.yar")
+    YARA_RULES = yara.compile(filepath=YARA_RULES_PATH)
 except Exception:
     YARA_RULES = None
 
@@ -41,9 +44,18 @@ if not os.path.exists(file_path):
 def detect_file_type(file_path):
     try:
         return magic.from_file(file_path, mime=True)
-    except:
+    except Exception:
         return "unknown"
 
+# ==============================
+# SAFE ZIP EXTRACTION
+# ==============================
+def safe_extract(zip_ref, path):
+    for member in zip_ref.namelist():
+        member_path = os.path.join(path, member)
+        if not os.path.realpath(member_path).startswith(os.path.realpath(path)):
+            raise Exception("Zip Slip detected")
+    zip_ref.extractall(path)
 
 # ==============================
 # CLAMAV SCAN
@@ -51,12 +63,15 @@ def detect_file_type(file_path):
 def clamav_scan(target):
     try:
         result = subprocess.run(
-            ["clamscan", "-r", "--infected", target], capture_output=True, text=True
+            # ["clamscan", "-r", "--infected", target], capture_output=True, text=True
+            ["clamscan", "--no-summary", target],
+            capture_output=True,
+            text=True
         )
         if "FOUND" in result.stdout:
             return "UNSAFE"
         return "SAFE"
-    except:
+    except Exception:
         return "ERROR"
 
 
@@ -86,27 +101,27 @@ def yara_scan(file_path):
 
         return highest
 
-    except:
+    except Exception:
         return "ERROR"
-
 
 # ==============================
 # ARCHIVE SCAN
 # ==============================
 def scan_archive(file_path):
-    temp_dir = "/tmp/fileguard_scan"
+    temp_dir = tempfile.mkdtemp(prefix="fileguard_")
 
     try:
         if zipfile.is_zipfile(file_path):
-            os.makedirs(temp_dir, exist_ok=True)
 
             with zipfile.ZipFile(file_path, "r") as z:
-                z.extractall(temp_dir)
+                safe_extract(z, temp_dir)
 
             return clamav_scan(temp_dir)
 
-    except:
+    except Exception:
         return "ERROR"
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)
 
     return "SAFE"
 
@@ -117,18 +132,33 @@ def scan_archive(file_path):
 def heuristic_scan(file_path):
     try:
         with open(file_path, "rb") as f:
-            data = f.read()
+            # data = f.read()
+            data = f.read(1024 * 1024)  # limit to 1MB
 
-            patterns = [b"eval(", b"base64", b"/bin/bash", b"powershell", b"cmd.exe"]
+            patterns = [
+                (b"eval(", "high"),
+                (b"base64", "medium"),
+                (b"/bin/bash", "medium"),
+                (b"powershell", "high"),
+                (b"cmd.exe", "high"),
+            ]
 
-            for p in patterns:
-                if p in data:
-                    return "UNSAFE"
+            # for p in patterns:
+            #     if p in data:
+            #         return "UNSAFE"
+            result = "SAFE"
 
-    except:
+            for pattern, severity in patterns:
+                if pattern in data:
+                    if severity == "high":
+                        return "UNSAFE"
+                    elif severity == "medium" and result != "UNSAFE":
+                        result = "SUSPICIOUS"
+
+            return result
+
+    except Exception:
         return "ERROR"
-
-    return "SAFE"
 
 
 # ==============================
@@ -143,11 +173,11 @@ def process_scan():
 
         for s in suspicious:
             if s in output:
-                return "UNSAFE"
+                return "SUSPICIOUS"
 
         return "SAFE"
 
-    except:
+    except Exception:
         return "ERROR"
 
 
@@ -159,11 +189,11 @@ def file_structure_check(file_path):
         result = subprocess.run(["file", file_path], capture_output=True, text=True)
 
         if "executable" in result.stdout.lower():
-            return "UNSAFE"
+            return "SUSPICIOUS"
 
         return "SAFE"
 
-    except:
+    except Exception:
         return "ERROR"
 
 
@@ -203,18 +233,23 @@ def scan(file_path):
         return "SUSPICIOUS"
 
     # 4. Heuristic
-    if heuristic_scan(file_path) == "UNSAFE":
+    heuristic_result = heuristic_scan(file_path)
+    if heuristic_result == "UNSAFE":
         return "UNSAFE"
+    elif heuristic_result == "SUSPICIOUS":
+        return "SUSPICIOUS"
 
     # 5. Structure check
-    if file_structure_check(file_path) == "UNSAFE":
-        return "UNSAFE"
+    structure_result = file_structure_check(file_path)
+    if structure_result == "SUSPICIOUS":
+        return "SUSPICIOUS"
 
     # 6. Process scan
-    if process_scan() == "UNSAFE":
-        return "UNSAFE"
+    process_result = process_scan()
+    if process_result == "SUSPICIOUS":
+        return "SUSPICIOUS"
 
-    # 7. Hash (optional use)
+    # 7. Hash (for future use)
     _ = get_hash(file_path)
 
     return "SAFE"
@@ -225,5 +260,5 @@ def scan(file_path):
 # ==============================
 try:
     print(scan(file_path))
-except:
+except Exception:
     print("ERROR")
