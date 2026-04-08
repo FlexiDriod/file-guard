@@ -1,8 +1,8 @@
 #!/bin/bash
 
 set -e
-# set -o pipefail
-# set -o nounset   # It prevents using undefined variables.
+set -o pipefail
+set -o nounset   # It prevents using undefined variables.
 export PATH="/usr/bin:/bin:/usr/sbin:/sbin"
 
 # ==================================================================================
@@ -49,7 +49,7 @@ chmod 600 "$PROCESSED"
 # ==============================
 # 🔐 Scanner Integrity Check (NEW)
 # ==============================
-SCANNER_HASH_EXPECTED="72c0603efa999aeb08975f19b8708aea0eee0ea21b1e9ec8cc5d3cb53d691d8a"
+SCANNER_HASH_EXPECTED="b5dc249c430bceeb5db0f5587d855df77fab7b18790b3183cd631d47ac64e9e4"
 
 if [ ! -f "$SCANNER_SCRIPT" ]; then
     echo "Scanner script not found!" | tee -a "$LOG_FILE"
@@ -97,7 +97,7 @@ fi
 
 # Monitor Function
 monitor_download() {
-    inotifywait -m -e close_write --format '%w %f' "$WATCH_DIR" 2>/dev/null | \
+    inotifywait -m -e close_write,create,moved_to --format '%w %f' "$WATCH_DIR" 2>/dev/null | \
     while read -r path file; do
 
         # 🔥 FIX: Safe full path resolution
@@ -140,15 +140,15 @@ monitor_download() {
         FILE_TYPE=$(file --mime-type -b "$FULL_PATH")
         echo "Type: $FILE_TYPE" | tee -a "$LOG_FILE"
 
-        # 🔥 FIX 4: File type filtering
-        case "$FILE_TYPE" in
-            application/pdf|application/x-executable|text/x-php|application/zip)
-                ;;
-            *)
-                echo "Skipped: unsupported type ($FILE_TYPE)" | tee -a "$LOG_FILE"
-                continue
-                ;;
-        esac
+        # # 🔥 FIX 4: File type filtering
+        # case "$FILE_TYPE" in
+        #     application/pdf|application/x-executable|text/x-php|application/zip)
+        #         ;;
+        #     *)
+        #         echo "Skipped: unsupported type ($FILE_TYPE)" | tee -a "$LOG_FILE"
+        #         continue
+        #         ;;
+        # esac
 
         # 🔥 NEW: File size limit (prevent abuse)
         FILE_SIZE=$(stat -c%s "$FULL_PATH" 2>/dev/null || echo 0)

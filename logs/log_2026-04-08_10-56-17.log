@@ -1,0 +1,16 @@
+############################################
+File Guard Started......
+Monitoring: /home/sudip-howlader/Downloads
+Log File: /home/sudip-howlader/file-guard/logs/log_2026-04-08_10-56-17.log
+###########################################
+
+
+--------------------------------------------------
+Wed Apr  8 10:57:23 IST 2026 - New file detected
+File: eicar.txt
+Path: /home/sudip-howlader/Downloads/eicar.txt
+Type: text/plain
+Skipped: unsupported type (text/plain)
+
+Wed Apr  8 10:58:30 IST 2026 - Service Stopping...
+File Guard Stopped........
